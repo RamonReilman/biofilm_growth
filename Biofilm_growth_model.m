@@ -165,6 +165,19 @@ data.constante_variable = uicontrol(
   "backgroundcolor", [0.823,0.972,0.596]
 );
 
+
+% difusie text input
+data.difusie_edit = uicontrol(
+  "style", "edit",
+  "units", "pixels",
+  "string", "test",
+  "position", [1,400,100,30],
+  "fontsize", 8,
+  "foregroundcolor", [0.188,0.419,0.203],
+  "backgroundcolor", [0.823,0.972,0.596]
+);
+% boundery layer text input
+
 % pushknop standaard wereld
 data.animation_toggle = uicontrol(
   "style", "pushbutton",
