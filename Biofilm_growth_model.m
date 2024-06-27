@@ -65,7 +65,7 @@ data.fun_settings = uicontrol(
   "units", "pixels",
   "position", [10,495+125, 130, 55],
   "style", "popupmenu",
-  "string", {"Random world", "Substrate in Middle", "Borderless world"},
+  "string", {"Random world", "Empty world", "Corner spawns", "Cross", "Smily preset","Fall Preset"},
   "backgroundcolor", button_color,
   "selectionhighlight", "off",
   "fontsize", 8,
@@ -554,7 +554,8 @@ function upload_wereld(source,event)
   if isequal(size(world), size(data.wereld))
     data.wereld = world;
     set(data.img,"cdata", data.wereld);
-    guidata(data.fig, data)
+
+    guidata(source, data);
    else
     errordlg("Ongeldig bestand");
 
@@ -563,11 +564,12 @@ endfunction
 
 function apply_settings(source, event)
   data = guidata(source);
-  if get(data.fun_settings, "value") == 1
 
+  if get(data.fun_settings, "value") == 1
     data.wereld = sparse(50);
 
-    rand_num = rand(50,50);
+    rand_num = rand(50,50)
+
     data.wereld = (rand(50,50) < 0.4);
     data.wereld = data.wereld*2;
     data.wereld(end,:) = data.wereld(:,end) = data.wereld(:, 1) = data.wereld(1,:) = 1;
@@ -582,10 +584,32 @@ function apply_settings(source, event)
     data.wereld = sparse(zeros(50));
 
   endif
+
+  if get(data.fun_settings, "value") == 2
+    data.wereld = sparse(zeros(50));
+    data.wereld(end,:) = data.wereld(:,end) = data.wereld(:, 1) = data.wereld(1,:) = 1;
+  endif
+
+  if get(data.fun_settings, "value") == 3
+    data.wereld = csvread("corner_spawns.txt")
+  endif
+
+  if get(data.fun_settings, "value") == 4
+    data.wereld = csvread("preset_cros.txt")
+  endif
+
+  if get(data.fun_settings, "value") == 5
+    data.wereld = csvread("smily_preset.csv")
+  endif
+
+  if get(data.fun_settings, "value") == 6
+    data.wereld = csvread("preset_fall.txt")
+  endif
+
   set(data.img, "cdata", data.wereld);
-  guidata(data.fig, data)
+  guidata(data.fig, data);
 endfunction
 
 function web_help(source, event)
-  web("http://langers.nl/wiki/doku.php?id=biofilm_growth_2024:welkom")
+  web("http://langers.nl/wiki/doku.php?id=biofilm_growth_2024:welkom");
 endfunction
