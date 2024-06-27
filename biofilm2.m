@@ -6,9 +6,10 @@ function world = gen_world(N)
   world = sparse(zeros(N));
   world(end,:) = world(:,end) = world(1,:) = world(:,1) =1;
   %world(80:end-1, 50) = 2;
-  world(30:50, 30:50) = 2;
+  %world(30:50, 30:50) = 2;
   %world(40:end-1, 2:20)= 2;
-  %world(1,1) = 2;
+  %world(2:80, 60:80) = 2;
+  world(80:end-1, 25) = 2;
   %world(20:40,20:40) = 2;
 endfunction
 
@@ -18,15 +19,15 @@ endfunction
 
 function Pd = cell_division(nutrient_matrix, K,world)
   Pd = sparse(zeros(size(nutrient_matrix)));
-  Pd(world == 2) = nutrient_matrix(world == 2) ./ (nutrient_matrix(world == 2)+K);
+  Pd = nutrient_matrix ./ (nutrient_matrix+K);
 endfunction
 
 
-function new_nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,Cs,F,a,layer_thickness, D,dt)
+function new_nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,k,layer_thickness, D,dt, Cs)
   [bacteria_row, bacteria_col] = find(world == 2);
 
 
-  new_nutrient_matrix = nutrient_matrix;
+  new_nutrient_matrix = zeros(size(world));
 
   for bacteria = 1:length(bacteria_row)
     bacteria_row(bacteria);, bacteria_col(bacteria);
@@ -62,14 +63,13 @@ function new_nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,Cs,F
       % Get bottom corner
     distances(7) = sqrt(distances(1)^2 + distances(4)^2);
     distances(8) = sqrt(distances(1)^2 + distances(4)^2);
-    distances(distances == 0) = (layer_thickness/a);
-    effectieve_afstand = sum(1 ./ (distances./a).^2)^(-1);
+    distances(distances == 0) = (layer_thickness);
 
-    cs = (sqrt(Cs) - sqrt(F* (1/8)*effectieve_afstand))^2;
-    new_nutrient_matrix(bacteria_row(bacteria), bacteria_col(bacteria)) = cs;
+    effectieve_afstand = sum(1 ./ distances.^2)^(-1);
+    new_nutrient_matrix(bacteria_row(bacteria), bacteria_col(bacteria)) = Cs / (1+sqrt((k / (2*D)) * effectieve_afstand));
 
   endfor
-  new_nutrient_matrix = new_nutrient_matrix + D * dt * del2(nutrient_matrix);
+  %new_nutrient_matrix = new_nutrient_matrix + D * dt * del2(nutrient_matrix);
 endfunction
 
 
@@ -107,39 +107,35 @@ endfunction
 
 
 % Constanten
-N = 100; % Size world
-dB = 1e-5 ; % Layer size
+N = 200; % Size world
+dB = 1 ; % Layer size
 
 r = 0.1; % Biofilm sterkte
-s = 0.2; % Stress
+s = 0.03; % Stress % leuke is 0.1 en 0.03
 
 
-D = 1e-9; % Diffusie rate
-k = 0.01; % Nutrient update rate
-C = 0.3; % Bulk concentratie
-bacteria_size = 1e-6 % Formaat bacterie
+D = 0.01; % Diffusie rate
+k = 0.1; % Nutrient update rate
+C = 1; % Bulk concentratie
+
 
 dt = 0.1; %Tijdstap difussie
 
-K = 1000; % Half-saturatie constante
-
-F = (k * bacteria_size^2) / (2*D*K) % Dimensieloze parameter
-Cs = C / K % Dimensieloze parameter
+K = 0.5; % Half-saturatie constante
+Cs = C
 world = gen_world(N);
 nutrient_matrix = gen_nutrients(N, C);
 
-while world(world == 2) || (N / length(world(world == 2))) > 0.8
+for i = 1:80
 
-nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,Cs,F, bacteria_size,dB,D,dt);
+nutrient_matrix = sparse(update_nutrient_matrix(world,nutrient_matrix,k,dB,D,dt, Cs));
 
-
-
-Pd = (cell_division(nutrient_matrix, K,world))
+Pd = full(cell_division(nutrient_matrix, K,world));
 
 world = sparse(new_gen(world, Pd));
 
 world = full(cell_erosion(world, r,s));
+imagesc(world)
 pause(0.1)
-break
-endwhile
 
+endfor
