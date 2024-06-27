@@ -16,12 +16,12 @@ data.wereld(end,:) = data.wereld(:,end) = data.wereld(:, 1) = data.wereld(1,:) =
 % color map
 
 % Slider variablen
-data.constante = 0
-data.max_itteratie = 10
-data.slider_timer = 0.5
+data.constante = 0;
+data.max_itteratie = 10;
+data.slider_timer = 0.5;
 
 % gui
-button_color = [255,229,238]/255
+button_color = [211 ,102,147]/255;
 screensize = get(0.0, "screensize")(3:4);
 data.fig = figure(
    "name", "Bacteria Nutrients",
@@ -29,7 +29,7 @@ data.fig = figure(
   "units", "pixels",
   "position", [(screensize(1) - 1200) / 2, (screensize(2) - 800) / 2, 1200, 800],
   "menubar", "none",
-  "color", [76, 27, 70]/255,
+  "color", [216,176,235]/255,
   "buttondownfcn", @mouse_click
 );
 
@@ -68,7 +68,8 @@ data.fun_settings = uicontrol(
   "string", {"Random world", "Empty world", "Corner spawns", "Cross", "Smily preset","Fall Preset"},
   "backgroundcolor", button_color,
   "selectionhighlight", "off",
-  "tooltipstring", "Generate Random world or one of our presets!",
+  "fontsize", 8,
+  "tooltipstring", "Generate preset/random worlds",
   "callback", @apply_settings
 );
 
@@ -89,9 +90,9 @@ data.speed_value = uicontrol (
   "style", "text",
   "units", "pixels",
   "position", [10, 395+125, 130, 35],
-  "backgroundcolor", [62, 41, 67]/255,
+  "backgroundcolor", [216,176,235]/255,
   "string", "time between step:\n 0s",
-  "Foregroundcolor", [1,1,1]
+  "Foregroundcolor", [0,0,0]
 );
 % Laag dikte
 data.dikte_slider = uicontrol(
@@ -111,16 +112,16 @@ data.dikte_value = uicontrol (
   "style", "text",
   "units", "pixels",
   "position", [10, 325+125, 130, 35],
-  "backgroundcolor", [62, 41, 67]/255,
+  "backgroundcolor", [216,176,235]/255,
   "string", "bulk layer thickness:\n 5 grid spaces",
-  "Foregroundcolor", [1,1,1]
+  "Foregroundcolor", [0,0,0]
 );
 % Sterkte + erosie
 data.sterkte_col = uicontrol(
   "units", "pixels",
   "position", [27, 210+125, 40, 40],
   "style", "edit",
-  "string", "0.09",
+  "string", "0.13",
   "value", 0.09,
   "tooltipstring", "Amount a colony can resist erosion",
   "callback", @set_value,
@@ -143,9 +144,9 @@ data.erosion_label = uicontrol (
   "style", "text",
   "units", "pixels",
   "position", [10, 255+125, 130, 35],
-  "backgroundcolor", [62, 41, 67]/255,
+  "backgroundcolor", [216,176,235]/255,
   "string", "Erosion resistance\n resistance     stress",
-  "Foregroundcolor", [1,1,1]
+  "Foregroundcolor", [0,0,0]
 );
 # k + D
 data.uptake = uicontrol(
@@ -154,7 +155,7 @@ data.uptake = uicontrol(
   "style", "edit",
   "string", "0.1",
   "value", 0.1,
-  "tooltipstring", "Amount 1 bacteria eats nutrients ()",
+  "tooltipstring", "Amount 1 bacteria eats nutrients (0.001-inf)",
   "callback", @set_value,
   "backgroundcolor", button_color
 );
@@ -174,10 +175,10 @@ data.diff_co = uicontrol(
 data.nutrition_diff_label = uicontrol (
   "style", "text",
   "units", "pixels",
-  "position", [10, 175+125, 130, 40],
-  "backgroundcolor", [62, 41, 67]/255,
+  "position", [10, 175+125, 130, 35],
+  "backgroundcolor", [216,176,235]/255,
   "string", "Nutrient\n    uptake     Diffusion",
-  "Foregroundcolor", [1,1,1]
+  "Foregroundcolor", [0,0,0]
 );
 
 data.bulk_c = uicontrol(
@@ -197,10 +198,10 @@ data.bulk_value = uicontrol (
   "style", "text",
   "units", "pixels",
   "position", [10, 85+125, 130, 35],
-  "backgroundcolor", [62, 41, 67]/255,
+  "backgroundcolor", [216,176,235]/255,
   "string", "nutrient concentration:\n 2.6",
   "fontsize", 8,
-  "Foregroundcolor", [1,1,1]
+  "Foregroundcolor", [0,0,0]
 );
 data.wanted_world = uicontrol(
   "units", "pixels",
@@ -244,7 +245,7 @@ help_page = uicontrol(
   "callback",@web_help
 );
 % display
-data.img = imagesc(data.axs, data.wereld, [0, 3]);
+data.img = polar(imagesc(data.axs, data.wereld, [0, 3]));
 axis(data.axs, "off");
 
 % gui variable
@@ -329,6 +330,7 @@ function world = cell_erosion(world, strength, stress)
   rand_mask = rand(size(world));
   eroding_cells = (rand_mask < Pe) & ( world == 2);
   eroding_cells_layer = eroding_cells & ((circshift(world, [0,-1]) == 0) | (circshift(world, [0,1]) == 0) | (circshift(world, [1,0]) == 0) | (circshift(world, [-1,0]) == 0));
+
   world(eroding_cells_layer) = 0;
 endfunction
 
@@ -340,13 +342,12 @@ endfunction
 
 
 function play(source, event)
-% Function play
-%N = 200; % Size world
+
 
   data = guidata(source);
   set_play(data);
   while get(data.play_stop_btn, "Value")
-  % circshift voor buren positie's
+
   data = take_step(source, event);
 
 
@@ -383,14 +384,14 @@ function set_play(data)
   if get(data.play_stop_btn, "Value");
     % If stop, change to red, label to stop and change the tooltipstring
     set(data.play_stop_btn, "string", "Stop");
-    set(data.play_stop_btn, "backgroundcolor", [255,55,120]/255);
+    set(data.play_stop_btn, "backgroundcolor", [211-20 ,102-20,147-20]/255);
     set(data.play_stop_btn, "tooltipstring", "Stop the cellular automaton");
 
 
   elseif ~get(data.play_stop_btn, "Value");
     % If stop, change to purple, label to start and change the tooltipstring
     set(data.play_stop_btn, "string", "Start")
-    set(data.play_stop_btn, "backgroundcolor", [204,0,255]/255)
+    set(data.play_stop_btn, "backgroundcolor", [211,102,147]/255)
     set(data.play_stop_btn, "tooltipstring", "Start the cellular automaton");
 
   endif
@@ -438,7 +439,7 @@ function data = take_step(source, event)
   data.wereld(data.wereld == 3 & underneibour == 2 & bovenneibour == 2) = 2;
   data.wereld(data.wereld == 0 & bovenneibour == 3 & (underneibour == 1| underneibour == 2)) = 2;
   data.wereld(data.wereld == 0 & bovenneibour == 3) = 3;
-
+  data.s = data.s * 1.005;
 endfunction
 
 
@@ -456,7 +457,7 @@ function get_constants(source)
 
 
   data.Cs = C;
-  data.K = 0.1; % Half-saturatie constante
+  data.K = 1; % Half-saturatie constante
   guidata(data.fig, data)
 endfunction
 
@@ -553,6 +554,7 @@ function upload_wereld(source,event)
   if isequal(size(world), size(data.wereld))
     data.wereld = world;
     set(data.img,"cdata", data.wereld);
+
     guidata(source, data);
    else
     errordlg("Ongeldig bestand");
@@ -565,10 +567,22 @@ function apply_settings(source, event)
 
   if get(data.fun_settings, "value") == 1
     data.wereld = sparse(50);
+
     rand_num = rand(50,50)
+
     data.wereld = (rand(50,50) < 0.4);
     data.wereld = data.wereld*2;
     data.wereld(end,:) = data.wereld(:,end) = data.wereld(:, 1) = data.wereld(1,:) = 1;
+    single(data.wereld);
+  elseif get(data.fun_settings, "value") == 2
+    data.wereld = sparse(zeros(50));
+
+    rand_num = rand(50,50);
+    data.wereld = double((rand(50,50) < 0.1));
+
+  else get(data.fun_settings, "value") == 3
+    data.wereld = sparse(zeros(50));
+
   endif
 
   if get(data.fun_settings, "value") == 2
