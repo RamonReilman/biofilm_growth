@@ -1,0 +1,10 @@
+zwart achtergrond
+090909
+donkergroen vaste cell
+306B34
+lichtgroen vrije cell
+D2F898
+water blauw
+2F97C1
+grond
+946846
