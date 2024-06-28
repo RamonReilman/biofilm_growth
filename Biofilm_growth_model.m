@@ -568,7 +568,7 @@ function apply_settings(source, event)
   if get(data.fun_settings, "value") == 1
     data.wereld = sparse(50);
 
-    rand_num = rand(50,50)
+    rand_num = rand(50,50);
 
     data.wereld = (rand(50,50) < 0.4);
     data.wereld = data.wereld*2;
@@ -605,6 +605,7 @@ function apply_settings(source, event)
   if get(data.fun_settings, "value") == 6
     data.wereld = csvread("preset_fall.txt");
   endif
+
   data.wereld = sparse(data.wereld);
   set(data.img, "cdata", data.wereld);
   guidata(data.fig, data);
