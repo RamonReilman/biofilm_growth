@@ -51,9 +51,10 @@ $c = (Cs / (1+\sqrt{k / (2*D) * (\sum_{i=8}1/d^2_i})^{-1})^2$
 $Pd = nutrientMatrix / nutrientMatrix+K$
 
 ---
+# Division probability
 * Pd > r (0,1)
     * Deel naar random open ruimte
-![bg right height:4in](core_00002.gif)
+![bg right height:4in](gif_niet_meer_grot.gif)
 
 ---
 # Code
@@ -75,11 +76,13 @@ $Pd = nutrientMatrix / nutrientMatrix+K$
   world(Pd == 1) = 2;
 endfunction
 ```
+
 ---
 # Erosie
 $Pe = 1 / (1+(strength / stress))$
 
 ---
+# Erosie
 * Pe > r (0,1) & cell == surface 
     * cell = 0
 
