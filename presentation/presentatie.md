@@ -14,11 +14,18 @@ math: mathjax
 * Niet gelukt
 * Colonie's in octave
 ---
-## De Automaton
+## Het Automaton
 * Groei
 * Verplaatsing
 * Bacteria
 ![bg right height:4.3in](showcase.png)
+
+---
+
+# Toepassing
+ * Simuleren omgevingen
+ * dimensieloze waarde
+ 
 
 ---
 ### Grid en Toestanden
@@ -99,10 +106,15 @@ $Pe = 1 / (1+(strength / stress))$
 
 ---
 
-# Conclusie
+# <!--fit-->Conclusie
 
 --- 
 
 # Einde+bronnen
 
-<p>https://www.sciencedirect.com/science/article/pii/S0025556400000493<p>
+
+https://www.sciencedirect.com/science/article/pii/S0025556400000493
+
+https://pdf.blucher.com.br/mechanicalengineeringproceedings/10wccm/16793.pdf
+
+https://www.sciencedirect.com/science/article/pii/S0043135413005587#sec2
