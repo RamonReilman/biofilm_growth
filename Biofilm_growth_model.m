@@ -245,7 +245,7 @@ help_page = uicontrol(
   "callback",@web_help
 );
 % display
-data.img = polar(imagesc(data.axs, data.wereld, [0, 3]));
+data.img = imagesc(data.axs, data.wereld, [0, 3]);
 axis(data.axs, "off");
 
 % gui variable
@@ -591,21 +591,21 @@ function apply_settings(source, event)
   endif
 
   if get(data.fun_settings, "value") == 3
-    data.wereld = csvread("corner_spawns.txt")
+    data.wereld = csvread("corner_spawns.txt");
   endif
 
   if get(data.fun_settings, "value") == 4
-    data.wereld = csvread("preset_cros.txt")
+    data.wereld = csvread("preset_cros.txt");
   endif
 
   if get(data.fun_settings, "value") == 5
-    data.wereld = csvread("smily_preset.csv")
+    data.wereld = csvread("smily_preset.csv");
   endif
 
   if get(data.fun_settings, "value") == 6
-    data.wereld = csvread("preset_fall.txt")
+    data.wereld = csvread("preset_fall.txt");
   endif
-
+  data.wereld = sparse(data.wereld);
   set(data.img, "cdata", data.wereld);
   guidata(data.fig, data);
 endfunction
