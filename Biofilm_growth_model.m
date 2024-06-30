@@ -95,7 +95,7 @@ data.speed_value = uicontrol (
   "units", "pixels",
   "position", [10, 395+125, 130, 35],
   "backgroundcolor", [216,176,235]/255,
-  "string", "time between step:\n 0s",
+  "string", "time between step:\n 0.1s",
   "Foregroundcolor", [0,0,0]
 );
 
@@ -107,7 +107,7 @@ data.dikte_slider = uicontrol(
   "string", "laag_dikte",
   "Min", 1,
   "Max", 11,
-  "value", 5,
+  "value", 2,
   "tooltipstring", "Change the thickness of layer between water and colony",
   "callback", @set_value,
   "backgroundcolor", button_color
@@ -312,8 +312,8 @@ function new_nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,k,la
     end_try_catch
 
 
-    % Add the layer thickness to distances
-    distances += (layer_thickness);
+    % Add the layer thickness to distances if distance == 0.
+    distances(distances == 0) = (layer_thickness);
 
     % Get harmonic mean of the distances
     effectieve_afstand = sum(1 ./ distances.^2)^(-1);
