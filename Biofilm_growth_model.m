@@ -316,10 +316,10 @@ function new_nutrient_matrix = update_nutrient_matrix(world,nutrient_matrix,k,la
     distances(distances == 0) = (layer_thickness);
 
     % Get harmonic mean of the distances
-    effectieve_afstand = sum(1 ./ distances.^2)^(-1);
+    harmonic_mean = sum(1 ./ distances.^2)^(-1);
 
     % Calculate new concentration for every bacteria
-    new_nutrient_matrix(bacteria_row(bacteria), bacteria_col(bacteria)) = Cs / (1+sqrt((k / (2*D)) * effectieve_afstand));
+    new_nutrient_matrix(bacteria_row(bacteria), bacteria_col(bacteria)) = Cs / (1+sqrt((k / (2*D)) * harmonic_mean));
 
   endfor
 endfunction
@@ -379,7 +379,8 @@ function world = cell_erosion(world, strength, stress)
   % Get cells that will be removed
   eroding_cells = (rand_mask < Pe) & ( world == 2);
   % Get all the cells at the surface of a colony
-  eroding_cells_layer = eroding_cells & ((circshift(world, [0,-1]) == 0) | (circshift(world, [0,1]) == 0) | (circshift(world, [1,0]) == 0) | (circshift(world, [-1,0]) == 0));
+  eroding_cells_layer = eroding_cells & ((circshift(world, [0,-1]) == 0) | (circshift(world, [0,1]) == 0) |
+                                         (circshift(world, [1,0]) == 0) | (circshift(world, [-1,0]) == 0));
 
   % Remove surfaced cells
   world(eroding_cells_layer) = 0;

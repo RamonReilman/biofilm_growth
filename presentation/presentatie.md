@@ -51,11 +51,11 @@ math: mathjax
 # <!--fit-->Wiskunde:frowning_face:
 ---
 # Concentratie bepaling
-$c = (Cs / (1+\sqrt{k / (2*D) * (\sum_{i=8}1/d^2_i})^{-1})^2$
+$c = (Cs / (1+\sqrt{k / (2*D) * (\sum_{i=8}1/d^2_i}))^{-1})^2$
 
 ---
 ![height:4in](conc_grid.png)
-$Pd = nutrientMatrix / nutrientMatrix+K$
+$Pd = nutrientMatrix / (nutrientMatrix+K)$
 
 ---
 # Division probability
