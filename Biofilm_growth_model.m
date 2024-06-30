@@ -731,6 +731,7 @@ function apply_settings(source, event)
 
   elseif get(data.fun_settings, "value") == 8
     data.wereld = csvread("pre_saves/preset_fall.txt");
+
   endif
 
   % Update world, render and update data.
